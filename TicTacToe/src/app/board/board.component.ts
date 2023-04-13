@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-board',
@@ -9,6 +9,8 @@ export class BoardComponent implements OnInit {
   squares: any[] = [];
   xIsNext: boolean = false;
   winner!: string | null ;
+
+  @Input() final!: boolean;
 
     ngOnInit(): void {
     this.newGame();
@@ -25,12 +27,14 @@ export class BoardComponent implements OnInit {
   }
 
   playerMove(i: number){
-    if(!this.squares[i]){
-      this.squares.splice(i, 1, this.player) //substitui no index clicado com o player
-      this.xIsNext = !this.xIsNext;
+    if(!this.winner){
+      if(!this.squares[i]){
+        this.squares.splice(i, 1, this.player) //substitui no index clicado com o player
+        this.xIsNext = !this.xIsNext;
 
-      this.winner = this.calculateWinner();
-    }
+        this.winner = this.calculateWinner();
+      }
+  }
 
   }
 

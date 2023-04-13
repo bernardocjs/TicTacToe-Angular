@@ -6,7 +6,9 @@
 
   <nb-layout-column>
 
-    <app-board></app-board>
+    <app-board [final]="hasFinished"></app-board>
+
+    <!-- <app-modal-finish></app-modal-finish> -->
 
     <router-outlet></router-outlet>
 

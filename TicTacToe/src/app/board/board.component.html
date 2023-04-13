@@ -1,14 +1,33 @@
-<h1>
-  Player Atual: {{player}}
-</h1>
+<div [ngStyle]="{
+  'display': 'flex',
+  'justify-content': 'center',
+  'margin-bottom': '20px'
+}">
+  <h1>
+    Player Atual: {{player}}
+  </h1>
+</div>
 
-<button (click)="newGame()"> reiniciar</button>
-
-<h2 *ngIf="winner">
+<h2 [ngStyle]="{
+  'display': 'flex',
+  'justify-content': 'center'
+}" *ngIf="winner">
   {{winner}} venceu!
 </h2>
+<div [ngStyle]="{
+  'display': 'flex',
+  'justify-content': 'center',
+  'margin-bottom': '20px'
+}">
+  <button nbButton outline status="primary" (click)="newGame()"> reiniciar</button>
+</div>
 
-<main>
-  <app-square *ngFor="let val of squares; let i = index" [value]="val" (click)="playerMove(i)">
-  </app-square>
-</main>
+<div [ngStyle]="{
+  'display': 'flex',
+  'justify-content': 'center'
+}">
+  <main>
+    <app-square *ngFor="let val of squares; let i = index" [value]="val" (click)="playerMove(i)">
+    </app-square>
+  </main>
+</div>
