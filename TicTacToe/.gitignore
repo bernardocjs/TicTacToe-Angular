@@ -2,13 +2,15 @@
 
 # Compiled output
 /dist
+package-lock.json
 /tmp
 /out-tsc
 /bazel-out
+/TicTacToe/.angular/cache
+/TicTacToe/node_modules
 
 # Node
 /node_modules
-package-lock.json
 npm-debug.log
 yarn-error.log
 
@@ -22,7 +24,7 @@ yarn-error.log
 *.sublime-workspace
 
 # Visual Studio Code
-.vscode/*
+/.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json

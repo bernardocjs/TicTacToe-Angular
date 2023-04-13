@@ -1,0 +1,21 @@
+<nb-layout>
+
+  <nb-layout-header fixed>
+    <!-- Insert header here -->
+  </nb-layout-header>
+
+  <nb-layout-column>
+
+    <app-board [final]="hasFinished"></app-board>
+
+    <!-- <app-modal-finish></app-modal-finish> -->
+
+    <router-outlet></router-outlet>
+
+  </nb-layout-column>
+
+  <nb-layout-footer fixed>
+    <!-- Insert footer here -->
+  </nb-layout-footer>
+
+</nb-layout>
