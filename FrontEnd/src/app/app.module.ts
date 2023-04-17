@@ -8,13 +8,10 @@ import { NbThemeModule, NbLayoutModule, NbButtonModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { SquareComponent } from './square/square.component';
 import { BoardComponent } from './board/board.component';
+import { SocketsService } from 'src/services/sockets.service';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    SquareComponent,
-    BoardComponent
-  ],
+  declarations: [AppComponent, SquareComponent, BoardComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -22,9 +19,9 @@ import { BoardComponent } from './board/board.component';
     NbThemeModule.forRoot({ name: 'dark' }),
     NbLayoutModule,
     NbButtonModule,
-    NbEvaIconsModule
+    NbEvaIconsModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [SocketsService],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

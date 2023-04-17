@@ -12,7 +12,11 @@ import { SocketService } from './sockets.service';
 import { IPlayer } from './IPlayer';
 import { ISession } from './ISession';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: true,
+  },
+})
 export class SocketsGateway implements OnGatewayInit, OnModuleDestroy {
   constructor(@Inject(SocketService) private socketService: SocketService) {}
   players: IPlayer[] = [];
@@ -33,6 +37,7 @@ export class SocketsGateway implements OnGatewayInit, OnModuleDestroy {
 
   async handleConection(client: Socket) {
     const player = client.handshake.query as unknown as IPlayer;
+    console.log(player);
 
     const playerInGame = this.players.some((p) => p.id === player.id);
 
