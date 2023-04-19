@@ -8,7 +8,6 @@ import { SocketsService } from 'src/services/sockets.service';
 })
 export class BoardComponent implements OnInit {
   constructor(private socketsService: SocketsService) {
-    console.log('fuck');
   }
 
   squares: any[] = [];

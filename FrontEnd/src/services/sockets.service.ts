@@ -1,6 +1,7 @@
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable, Observer } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Socket, io } from 'socket.io-client';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -8,30 +9,25 @@ import { Socket, io } from 'socket.io-client';
 export class SocketsService {
   public game: BehaviorSubject<[]> = new BehaviorSubject([]);
   public socket!: Socket;
-  constructor() {}
+  constructor(private router: Router) {}
 
   connect(id: string, session: string) {
-    this.socket = io('http://localhost:3333', {
-      transports: ['websocket'],
+    this.socket = io('http://localhost:3000', {
+      transports: ['websocket', 'polling', 'flashsocket'],
       query: {
-        player: {
-          id,
-          session,
-        },
+        id,
+        session,
       },
     });
 
-    this.socket.on('connect', function () {
+    this.socket.on('connect', () => {
       console.log('Connected!');
+      this.router.navigate(['/room']);
     });
   }
 
   disconnect() {
     this.socket.disconnect();
-  }
-
-  public sendMappedGame(game: [], sessionId: string) {
-    this.socket.emit(sessionId, game);
   }
 
   public getMappedGame(sessionId: string) {

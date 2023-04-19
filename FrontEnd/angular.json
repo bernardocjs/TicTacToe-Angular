@@ -93,7 +93,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+            "node_modules/@nebular/theme/styles/prebuilt/corporate.css",
+            "node_modules/@nebular/theme/styles/prebuilt/cosmic.css",
+            "node_modules/@nebular/theme/styles/prebuilt/default.css"
             ],
             "scripts": []
           }

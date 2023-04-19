@@ -5,7 +5,6 @@ import {
   OnGatewayInit,
   WebSocketGateway,
   WebSocketServer,
-  SubscribeMessage,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { SocketService } from './sockets.service';
@@ -17,7 +16,13 @@ import { ISession } from './ISession';
     origin: true,
   },
 })
-export class SocketsGateway implements OnGatewayInit, OnModuleDestroy {
+export class SocketsGateway
+  implements
+    OnGatewayInit,
+    OnModuleDestroy,
+    OnGatewayConnection,
+    OnGatewayDisconnect
+{
   constructor(@Inject(SocketService) private socketService: SocketService) {}
   players: IPlayer[] = [];
   sessions: ISession[] = [];
@@ -35,47 +40,57 @@ export class SocketsGateway implements OnGatewayInit, OnModuleDestroy {
     this.server.close();
   }
 
-  async handleConection(client: Socket) {
-    const player = client.handshake.query as unknown as IPlayer;
-    console.log(player);
+  async handleConnection(client: Socket) {
+    try {
+      if (!client.handshake.query) return;
+      const player = client.handshake.query as unknown as IPlayer;
+      console.log(player);
 
-    const playerInGame = this.players.some((p) => p.id === player.id);
+      const playerInGame = this.players.some((p) => p.id === player.id);
 
-    if (playerInGame) {
-      client.disconnect();
-      return;
-    }
-
-    const sessionExists = this.sessions.filter((s) => s.id === player.session);
-
-    if (sessionExists) {
-      if (sessionExists[0].players.length >= 2) {
+      if (playerInGame) {
         client.disconnect();
         return;
       }
-      sessionExists[0].players.push(player);
 
-      const sessionIndex = this.sessions.findIndex(
-        (s) => s.id === sessionExists[0].id,
+      const sessionExists = this.sessions.filter(
+        (s) => s.id === player.session,
       );
-      this.sessions.splice(sessionIndex, 1, sessionExists[0]);
-    } else {
-      this.sessions.push({ id: player.session, players: [player] });
+
+      if (sessionExists[0]) {
+        if (sessionExists[0].players.length >= 2) {
+          client.disconnect();
+          return;
+        }
+        sessionExists[0].players.push(player);
+
+        const sessionIndex = this.sessions.findIndex(
+          (s) => s.id === sessionExists[0].id,
+        );
+        this.sessions.splice(sessionIndex, 1, sessionExists[0]);
+      } else {
+        this.sessions.push({ id: player.session, players: [player] });
+      }
+
+      this.players.push(player);
+
+      await client.join(player.session);
+
+      // client.on("join session", (player.session) => {
+      //   client.join(player.session);
+      // });
+
+      client.emit('new user', player.id);
+    } catch (e) {
+      console.log(e);
     }
-
-    this.players.push(player);
-
-    await client.join(player.session);
   }
 
   async handleDisconnect(client: Socket) {
-    await client.leave(client.handshake.query.sessionId.toString());
-  }
-
-  async handleChange(client: Socket, payload: string[]) {
-    //emit array received
-    client
-      .to(client.handshake.query.sessionId.toString())
-      .emit('change', payload);
+    try {
+      await client.leave(client.handshake.query.sessionId.toString());
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

@@ -1,0 +1,11 @@
+<div>
+  <h1>Room</h1>
+
+  <form class="room" [formGroup]="room" (ngSubmit)="createRoom()">
+    <label for="id">Room Id</label>
+    <input nbInput type="text" name="id" formControlName="id" placeholder="Room ID">
+    <label for="player">Player</label>
+    <input nbInput type="text" name="player" formControlName="player" placeholder="Player ID">
+    <button nbButton status="primary" type="submit">Create Room</button>
+  </form>
+</div>
