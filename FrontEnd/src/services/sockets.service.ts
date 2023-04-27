@@ -9,9 +9,10 @@ import { Router } from '@angular/router';
 export class SocketsService {
   public game: BehaviorSubject<[]> = new BehaviorSubject([]);
   public socket!: Socket;
+  public player!: { id: string; session: string };
   constructor(private router: Router) {}
 
-  connect(id: string, session: string) {
+  connect(session: string, id: string) {
     this.socket = io('http://localhost:3000', {
       transports: ['websocket', 'polling', 'flashsocket'],
       query: {
@@ -22,7 +23,9 @@ export class SocketsService {
 
     this.socket.on('connect', () => {
       console.log('Connected!');
-      this.router.navigate(['/room']);
+      this.player = { session, id };
+      if (this.player.id && this.player.session)
+        this.router.navigate(['/room']);
     });
   }
 
@@ -31,11 +34,12 @@ export class SocketsService {
   }
 
   public getMappedGame(sessionId: string) {
-    return new Observable((observer) => {
-      this.socket.on(sessionId, (msg) => {
-        console.log(msg);
-        observer.next(msg);
-      });
+    this.socket.on('new user', (msg) => {
+      console.log(msg);
     });
+  }
+
+  public sendMappedGame(sessionId: string, game: any) {
+    this.socket.emit('action', sessionId, game);
   }
 }

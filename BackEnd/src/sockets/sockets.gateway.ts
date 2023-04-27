@@ -34,6 +34,7 @@ export class SocketsGateway
     this.socketService.socket = server;
     this.socketService.players = this.players;
     this.socketService.sessions = this.sessions;
+    this.socketListenForAction();
   }
 
   onModuleDestroy() {
@@ -44,7 +45,6 @@ export class SocketsGateway
     try {
       if (!client.handshake.query) return;
       const player = client.handshake.query as unknown as IPlayer;
-      console.log(player);
 
       const playerInGame = this.players.some((p) => p.id === player.id);
 
@@ -73,7 +73,6 @@ export class SocketsGateway
       }
 
       this.players.push(player);
-
       await client.join(player.session);
 
       // client.on("join session", (player.session) => {
@@ -86,8 +85,17 @@ export class SocketsGateway
     }
   }
 
+  async socketListenForAction() {
+    this.server.on('action', async (sessionId, game) => {
+      console.log(sessionId);
+      console.log('aaaaaa');
+      this.server.emit(`room/${sessionId}`, game);
+    });
+  }
+
   async handleDisconnect(client: Socket) {
     try {
+      if (!client.handshake.query.sessionId) return;
       await client.leave(client.handshake.query.sessionId.toString());
     } catch (e) {
       console.log(e);

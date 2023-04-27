@@ -7,16 +7,19 @@ import { SocketsService } from 'src/services/sockets.service';
   styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent implements OnInit {
-  constructor(private socketsService: SocketsService) {
-  }
+  constructor(private socketsService: SocketsService) {}
 
   squares: any[] = [];
   xIsNext: boolean = false;
   winner!: string | null;
+  playerId!: string;
+  sessionId!: string;
 
   @Input() final!: boolean;
 
   ngOnInit(): void {
+    this.playerId = this.socketsService.player.id;
+    this.sessionId = this.socketsService.player.session;
     this.newGame();
   }
 
@@ -38,6 +41,7 @@ export class BoardComponent implements OnInit {
         this.xIsNext = !this.xIsNext;
 
         this.winner = this.calculateWinner();
+        this.socketsService.sendMappedGame(this.sessionId, this.squares);
       }
     }
   }
